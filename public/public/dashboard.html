@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard - Khatabook Clone</title>
+        <style>
+        :root {
+            --primary: #6C63FF;
+            --secondary: #4CD6C1;
+            --dark-bg: #121212;
+            --card-bg: #1E1E1E;
+            --text: #E0E0E0;
+            --text-secondary: #A0A0A0;
+            --danger: #FF5252;
+            --success: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(76, 214, 193, 0.1) 0%, transparent 20%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right,
+                    transparent,
+                    transparent,
+                    transparent,
+                    rgba(108, 99, 255, 0.05),
+                    rgba(76, 214, 193, 0.05),
+                    transparent);
+            z-index: 0;
+            transform: rotate(30deg);
+            animation: shimmer 8s linear infinite;
+        }
+
+        @keyframes shimmer {
+            from {
+                transform: rotate(30deg) translateY(0);
+            }
+
+            to {
+                transform: rotate(30deg) translateY(50%);
+            }
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            padding-left: 2.5rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+        }
+
+        input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        button::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent);
+            transition: all 0.5s;
+        }
+
+        button:hover::after {
+            left: 100%;
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .transaction-list {
+            list-style: none;
+            position: relative;
+            z-index: 1;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .transaction-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .transaction-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .transaction-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .transaction-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .transaction-item.positive {
+            border-left-color: var(--success);
+        }
+
+        .transaction-item.negative {
+            border-left-color: var(--danger);
+        }
+
+        .transaction-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transaction-name {
+            font-weight: 500;
+        }
+
+        .transaction-amount {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .amount-positive {
+            color: var(--success);
+        }
+
+        .amount-negative {
+            color: var(--danger);
+        }
+
+        .transaction-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .delete-btn {
+            background: rgba(255, 82, 82, 0.1);
+            color: var(--danger);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 82, 82, 0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .total-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .total-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .total-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+   
+        input[type="radio"] {
+    transform: scale(1.5); /* Adjust the value to change the size */
+    margin-right: 10px; /* Optional, for spacing */
+  }
+
+        .radio-option {
+            flex: 1;
+            position: relative;
+        }
+
+        .radio-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 2rem;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option input:checked+.radio-label {
+            background-color: rgba(108, 99, 255, 0.2);
+            border-color: var(--primary);
+        }
+
+        .radio-label.credit {
+            color: var(--success);
+        }
+
+        .radio-label.debit {
+            color: var(--danger);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transform: translateX(120%);
+            transition: transform 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-success {
+            border-left-color: var(--success);
+        }
+
+        .notification-error {
+            border-left-color: var(--danger);
+        }
+
+        .notification-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .no-transactions {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+        </style>
+    </head>
+    <body>
+        <h2 id="usernameDisplay">Loading...</h2>
+        <div class="container">
+            <div class="header">
+                <div class="logo">KhataBook</div>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+            <div class="dashboard-grid">
+                <!-- Add Transaction Card -->
+                <div class="card">
+                    <h3 class="card-title">Add Transaction</h3>
+                    <form id="transaction-form">
+                        <div class="radio-group">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="type"
+                                    value="credit"
+                                    checked
+                                >
+                                You will get (+)
+                            </label>
+                            <label>
+                                <input type="radio" name="type" value="debit">
+                                You will give (-)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <input
+                                type="text"
+                                id="name"
+                                placeholder="Person or Business Name"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <input
+                                type="number"
+                                id="amount"
+                                placeholder="Amount"
+                                required
+                            >
+                        </div>
+                        <button type="submit" class="submit-btn">Add Transaction</button>
+                    </form>
+                </div>
+                <!-- Transaction History Card -->
+                <div class="card">
+                    <h3 class="card-title">Transaction History</h3>
+                    <ul id="transaction-list" class="transaction-list"></ul>
+                    <div id="no-transactions" class="no-transactions" style="display: none;">
+                        <p>No transactions yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- OG one -->
+        <!-- <script>
+            const usernameDisplay = document.getElementById("usernameDisplay");
+            const form = document.getElementById("transaction-form");
+            const transactionList = document.getElementById("transaction-list");
+            const noTransactions = document.getElementById("no-transactions");
+        
+            let transactions = [];
+        
+            // Set username (from localStorage)
+            const username = localStorage.getItem("username") || "User";
+            usernameDisplay.textContent = `Welcome, ${username}!`;
+        
+            // Add transaction to backend
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+                const name = document.getElementById("name").value.trim();
+                const amount = parseFloat(document.getElementById("amount").value);
+                const type = form.type.value;
+        
+                if (name && amount > 0) {
+                    try {
+                        const res = await fetch("/transaction", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ name, amount, type })
+                        });
+        
+                        const data = await res.json();
+                        if (data.success) {
+                            fetchTransactions();
+                            form.reset();
+                            form.type.value = "credit";
+                        } else {
+                            alert(data.error || "Failed to add transaction");
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        alert("Server error");
+                    }
+                }
+            });
+        
+            // Fetch transactions for this user
+            async function fetchTransactions() {
+                try {
+                    const res = await fetch("/transactions");
+                    const data = await res.json();
+        
+                    if (Array.isArray(data)) {
+                        transactions = data;
+                        updateTransactionList();
+                    } else {
+                        throw new Error("Invalid response");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Could not load transactions");
+                }
+            }
+        
+            // Display transactions in UI
+            function updateTransactionList() {
+                transactionList.innerHTML = "";
+                if (transactions.length === 0) {
+                    noTransactions.style.display = "block";
+                    return;
+                }
+                noTransactions.style.display = "none";
+                transactions.forEach(txn => {
+                    const li = document.createElement("li");
+                    li.className = `transaction-item ${txn.type}`;
+                    li.innerHTML = `
+                        <span>${txn.name}</span>
+                        <span>${txn.type === "credit" ? "+" : "-"}₹${txn.amount}</span>
+                    `;
+                    transactionList.appendChild(li);
+                });
+            }
+        
+            // Logout function
+            function logout() {
+                localStorage.removeItem("username");
+                window.location.href = "index.html";
+            }
+        
+            // Initial fetch
+            fetchTransactions();
+        </script> -->
+ 
+ 
+     <!-- updated script tag -->
+     <script>
+        const usernameDisplay = document.getElementById("usernameDisplay");
+        const form = document.getElementById("transaction-form");
+        const transactionList = document.getElementById("transaction-list");
+        const noTransactions = document.getElementById("no-transactions");
+    
+        let transactions = [];
+    
+        // Set username (from localStorage)
+        const username = localStorage.getItem("username") || "User";
+        usernameDisplay.textContent = `Welcome, ${username}!`;
+    
+        // Add transaction to backend
+        form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const name = document.getElementById("name").value.trim();
+            const amount = parseFloat(document.getElementById("amount").value);
+            const type = form.type.value;
+    
+            if (name && amount > 0) {
+                try {
+                    const res = await fetch("/transaction", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name, amount, type })
+                    });
+    
+                    const data = await res.json();
+                    if (data.success) {
+                        fetchTransactions();
+                        form.reset();
+                        form.type.value = "credit";
+                    } else {
+                        alert(data.error || "Failed to add transaction");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Server error");
+                }
+            }
+        });
+    
+        // Fetch transactions for this user
+        async function fetchTransactions() {
+            try {
+                const res = await fetch("/transactions");
+                const data = await res.json();
+    
+                if (Array.isArray(data)) {
+                    transactions = data;
+                    updateTransactionList();
+                } else {
+                    throw new Error("Invalid response");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Could not load transactions");
+            }
+        }
+    
+        // Delete transaction
+        async function deleteTransaction(id) {
+            try {
+                const res = await fetch(`/transaction/${id}`, {
+                    method: "DELETE"
+                });
+                const data = await res.json();
+    
+                if (data.success) {
+                    transactions = transactions.filter(t => t._id !== id);
+                    updateTransactionList();
+                } else {
+                    alert(data.error || "Failed to delete transaction");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error deleting transaction");
+            }
+        }
+    
+        // Display transactions in UI
+        function updateTransactionList() {
+            transactionList.innerHTML = "";
+            if (transactions.length === 0) {
+                noTransactions.style.display = "block";
+                return;
+            }
+            noTransactions.style.display = "none";
+            transactions.forEach(txn => {
+                const li = document.createElement("li");
+                li.className = `transaction-item ${txn.type}`;
+                li.innerHTML = `
+                    <span>${txn.name}</span>
+                    <span>${txn.type === "credit" ? "+" : "-"}₹${txn.amount}</span>
+                    <button onclick="deleteTransaction('${txn._id}')" class="delete-btn">Delete</button>
+                `;
+                transactionList.appendChild(li);
+            });
+        }
+    
+        // Logout function
+        function logout() {
+            localStorage.removeItem("username");
+            window.location.href = "index.html";
+        }
+    
+        // Initial fetch
+        fetchTransactions();
+    </script>    
+
+
+    </body>
+</html>
