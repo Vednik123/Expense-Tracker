@@ -24,7 +24,8 @@ An intuitive and lightweight web application to **track daily expenses**, built 
 
 ## 📸 Screenshots
 
-*(Insert screenshots or demo gifs here)*
+![image](https://github.com/user-attachments/assets/3c1aa95c-9e02-4d20-8935-7623d919002a)
+![image](https://github.com/user-attachments/assets/6b8422c8-a1c6-4420-baa1-ca8cbfbb1092)
 
 ---
 
